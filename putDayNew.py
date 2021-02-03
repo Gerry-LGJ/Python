@@ -1,6 +1,9 @@
+# -*- coding: utf8 -*-
+
 import requests
 import time
 import random
+import json
 import student
 
 putDayNew_url = "https://gc.hc-web.cn/putDayNew"
@@ -56,12 +59,12 @@ def railyReport(uid, bex="false", panting="false", other="", campus="暂未反�
     putDayNew_data['other'] = other
     putDayNew_data['campus'] = campus
 
-    try:
-        result = requests.post(url=putDayNew_url, headers=putDayNew_headers, data=putDayNew_data)
-        print(result.text)
+    result = requests.post(url=putDayNew_url, headers=putDayNew_headers, data=putDayNew_data)
+    response = json.loads(result.text)
+    print(result.text)
 
-    except Exception as e:
-        print(f"每日一报填写失败！！！\n{e}")
+    if response["msg"] != "保存成功":
+        raise Exception("响应出现警告，请前往百度云函数控制台进行检查。")
 
 
 if __name__ == '__main__':
