@@ -9,7 +9,7 @@ import json
 import requests
 
 # 请自行前往 https://pushplus.hxtrip.com 获取token
-TOKEN = "xxxxxxxxxxxxxxx467e8xxxxxxxxxxxxx"
+TOKEN = ""
 
 '''
 def reportEveryone(name, stuid):
