@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 import requests
-import student
+import login
 
 getDay_url = "https://gc.hc-web.cn/getDay"
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     stuID = str(input("请输入学号："))
 
     try:
-        stu_json = student.request_student(stuName, stuID)
+        stu_json = login.request_student(stuName, stuID)
         getDay_data['uid'] = stu_json['user']['id']
 
         getDay_result = requests.post(url=getDay_url, headers=getDay_headers, data=getDay_data)

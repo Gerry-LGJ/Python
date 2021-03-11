@@ -4,7 +4,7 @@ import requests
 import time
 import random
 import json
-import student
+import login
 
 putDayNew_url = "https://gc.hc-web.cn/putDayNew"
 
@@ -20,58 +20,53 @@ putDayNew_headers = {
 }
 
 putDayNew_data = {
-    'uid': "",  # 学生ID
-    'am': "36",  # 上午体温
-    'pm': "36",  # 下午体温
-    'bex': "false",  # 是否咳嗽
-    'panting': "false",  # 是否气促
-    'other': "",  # 其它症状
-    'campus': "南校区",  # 现住小区
-    'plan': "0",  # 近一周是否计划去高风险地区
-    'planaddress': ""  # 如果计划去高风险地区的话，请填写，并将plan键置1
+    'uid': None,                    # 学生ID
+    'am': "36",                     # 上午体温
+    'pm': "36",                     # 下午体温
+    'bex': "false",                 # 是否咳嗽
+    'panting': "false",             # 是否气促
+    'other': "",                    # 其它症状
+    'campus': "南校区",              # 现住小区，默认南校区
+    'plan': "0",                    # 近一周是否计划去高风险地区
+    'planaddress': ""               # 如果计划去高风险地区的话，请填写，并将plan键置1
 }
 
 
 def random_Float():
     temp = random.uniform(36.5, 37.0)
     result = "%.1f" % temp
-    print(result)
+    # print(result)
     return result
 
 
-def railyReport(uid, bex="false", panting="false", other="", campus="暂未反校"):
+def railyReport(uid, **kwargs):
     """
     每日一报具体函数
     :param uid: 学生ID-str
-    :param am: 上午体温-str
-    :param pm: 下午体温-str
-    :param bex: 是否咳嗽-str
-    :param panting: 是否气促-str
-    :param other: 其它症状-str
-    :param campus: 现住小区-str
     :return: None
     """
     putDayNew_data['uid'] = uid
     putDayNew_data['am'] = random_Float()
     putDayNew_data['pm'] = random_Float()
-    putDayNew_data['bex'] = bex
-    putDayNew_data['panting'] = panting
-    putDayNew_data['other'] = other
-    putDayNew_data['campus'] = campus
+
+    for key, value in kwargs.items():
+        if not putDayNew_data.__contains__(key):    # 查找键，防止“憨憨”传入不存在的键
+            raise Exception(f"The search for the \"{key}\" key failed. Please check if it exists.")
+        putDayNew_data[key] = value
 
     result = requests.post(url=putDayNew_url, headers=putDayNew_headers, data=putDayNew_data)
     response = json.loads(result.text)
-    print(result.text)
+    # print(result.text)                            # 云函数无需打印，仅测试用
 
-    if response["msg"] != "保存成功":
-        raise Exception("响应出现警告，请前往百度云函数控制台进行检查。")
+    if response["msg"] != "保存成功":                 # 防止出现奇怪的回应，例如在21：00 - 次日9：00之间做测试的时候
+        raise Exception(f"响应出现警告，请前往百度云函数控制台进行检查。Error_to:{str(result.text)}。")
 
 
 if __name__ == '__main__':
     stuName = str(input("请输入姓名："))
     stuID = str(input("请输入学号："))
 
-    stu_json = student.request_student(stuName, stuID)
+    stu_json = login.request_student(stuName, stuID)
     putDayNew_data['uid'] = stu_json['user']['id']
 
     new_result = requests.post(url=putDayNew_url, headers=putDayNew_headers, data=putDayNew_data)
