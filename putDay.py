@@ -6,7 +6,7 @@ import random
 import json
 import login
 
-putDayNew_url = "https://gc.hc-web.cn/putDayNew"
+putDayNew_url = "https://gc.hc-web.cn/putDay"
 
 putDayNew_headers = {
     # POST /putDayNew HTTP/1.1
