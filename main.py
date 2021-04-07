@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 import login                # 用于获取学生的信息，以便每日一报
-import putDayNew            # 用于每日一报
+import putDay               # 用于每日一报
 # import getDay             # 获取所有每日一报的记录
 import time                 # 用于缓冲post请求，防止服务器崩溃
 import json                 # 转换响应对象为字典
